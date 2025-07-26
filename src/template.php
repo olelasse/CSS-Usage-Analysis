@@ -10,7 +10,7 @@
  */
 function render(string $file, array $data = []): string
 {
-    // Gjør data tilgjengelig som variabler i template-filen (f.eks. $data['title'] blir til $title)
+    // Make data available as variables in the template file (e.g. $data['title'] becomes $title)
     extract($data);
     
     ob_start();
