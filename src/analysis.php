@@ -5,7 +5,7 @@ function getCssSelectors(string $cssContent): array
 {
     $validSelectors = []; 
 
-    // Finner alle potensielle kandidater
+    // Finds all potential candidates
     preg_match_all(
         '/(\.[a-zA-Z0-9_-]+)|(\#[a-zA-Z0-9_-]+)/', 
         $cssContent, 
@@ -21,11 +21,11 @@ function getCssSelectors(string $cssContent): array
         }
     }
 
-    // Går gjennom kandidatene og fjerner de som er ugyldige
+    // Goes through the candidates and removes those that are invalid
     foreach ($validSelectors as $key => $selector) {
         switch (substr($selector, 0, 1)) {
             case '.':
-                // Sjekker klasser som starter med tall for å unngå em/rgba-verdier
+                // Checks classes starting with numbers to avoid em/rgba values
                 if (is_numeric(substr($selector, 1, 1))) {
                     if (str_ends_with($selector, 'em') || strlen(substr($selector, 1)) === 1) {
                         unset($validSelectors[$key]);
@@ -33,7 +33,7 @@ function getCssSelectors(string $cssContent): array
                 }
                 break;
             case '#':
-                // Fjerner sannsynlige fargekoder
+                // Removes probable color codes
                 $selectorName = substr($selector, 1);
                 if (
                     preg_match('/^[0-9a-fA-F]+$/', $selectorName)
@@ -44,7 +44,7 @@ function getCssSelectors(string $cssContent): array
                 break;
         }
     }
-    return array_values(array_unique($validSelectors)); // Returnerer en re-indeksert, unik liste
+    return array_values(array_unique($validSelectors)); // Returns a re-indexed, unique list
 }
 
 function getPatternFromSelector(string $fullSelector): string 
@@ -64,7 +64,7 @@ function getSelectorUsage(array $selectors, RecursiveIteratorIterator $files): a
     $unusedSelectors = $selectors;
 
     foreach ($files as $file) {
-        // Vi sjekker bare for filer med relevante extensions
+        // We only check for files with relevant extensions
         if (!$file->isFile() || !in_array($file->getExtension(), ['php', 'phtml', 'html'])) {
             continue;
         }
@@ -80,10 +80,10 @@ function getSelectorUsage(array $selectors, RecursiveIteratorIterator $files): a
 
             foreach ($fileContentLines as $lineNumber => $lineContent) {
                 if (!preg_match($pattern, $lineContent)) {
-                    continue; // Gå videre til neste linje
+                    continue; // Move on to the next line
                 }
                 
-                // Klassen er funnet, legg til i brukte og fjern fra ubrukte
+                // The class has been found, add to used and remove from unused
                 $usedSelectorsData[$selector][] = [
                     'file' => $filePath,
                     'line' => $lineNumber + 1,
@@ -99,6 +99,6 @@ function getSelectorUsage(array $selectors, RecursiveIteratorIterator $files): a
 
     return [
         'used'   => $usedSelectorsData,
-        'unused' => array_values($unusedSelectors) // Returner re-indeksert
+        'unused' => array_values($unusedSelectors) // Return re-indexed
     ];
 }
