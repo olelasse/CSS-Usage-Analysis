@@ -1,0 +1,17 @@
+<?php
+// config/config.php.sample
+
+/**
+ * Configuration for CSS Usage Analysis.
+ *
+ * Copy this file to config.php and edit the paths.
+ */
+return [
+    'paths' => [
+        // Path to the directory containing your template files (.php, .phtml, etc.)
+        'templates'   => '/path/to/your/project/templates/',  
+
+        // Path to the specific CSS file you want to analyze
+        'stylesheet' => '/path/to/your/project/public/css/main.css',
+    ]
+];
